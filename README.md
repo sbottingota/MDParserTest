@@ -13,5 +13,6 @@ $ awk -f parser.awk [input markdown file] > [output html file]
 ---
 
 List of current features:
-- Headers (# - ###### -> &lt;h1&gt; - &lt;h6&gt;)
+- Headers (# - ###### &rarr; &lt;h1&gt; - &lt;h6&gt;)
+- Horizontal rules (---|\*\*\*|\_\_\_ &rarr; &lt;hr/&gt;)
 
