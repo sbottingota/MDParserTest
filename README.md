@@ -2,7 +2,7 @@
 ## A very simple markdown to html parser I made using awk.
 
 ---
-Run like:
+Run like:  
 ```sh
 $ ./parser.sh [input md file]
 ```
@@ -20,4 +20,4 @@ List of current features:
 - Headers (# - ######)
 - Horizontal rules (---|\*\*\*|\_\_\_)
 - Line breaks (line with two spaces at the end)
-
+- Bold and italic text (using \* or \_)
