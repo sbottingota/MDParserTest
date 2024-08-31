@@ -5,9 +5,9 @@ use warnings;
 
 {
     my $codeblock = 0; # 0: out of block, 1: in block of three backticks, 2: in block of four backticks
+    my $listdepth = 0;
 
     sub parseline {
-
         my $line = $_[0];
 
         if ($line =~ m/^````/) {
@@ -30,6 +30,24 @@ use warnings;
         }
 
         if (!$codeblock) {
+            if ($line =~ s{^((?: {4})*)[-*] (.*)$}{<li>$2</li>}) {
+                my $newlistdepth = (length($1) / 4) + 1;
+
+                while ($newlistdepth > $listdepth) {
+                    $line = "<ul>\n" . $line;
+                    ++$listdepth;
+                }
+                while ($newlistdepth < $listdepth) {
+                    $line = "</ul>\n" . $line;
+                    --$listdepth;
+                }
+            } else {
+                while ($listdepth > 0) {
+                    $line = "</ul>\n" .  $line;
+                    --$listdepth;
+                }
+            }
+
             $line =~ s{^(#{1,6}) (.*)$}{'<h' . length($1) . ">$2</h" . length($1) . '>'}e; # headers
             $line =~ s{^(\*\*\*+)|(---+)|(___+)\s*$}{<hr />\n}; # horizontal rules
             $line =~ s{  $}{<br />}; # line breaks
@@ -39,7 +57,7 @@ use warnings;
             $line =~ s{([*_])(.*?)\1}{<em>$2</em>}g;
         }
 
-        $line; # return modified line
+        return $line; # return modified line
     }
 }
 
