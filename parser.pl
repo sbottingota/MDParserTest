@@ -10,20 +10,20 @@ use warnings;
 
         my $line = $_[0];
 
-        if ($line =~ m/^```/) {
+        if ($line =~ m/^````/) {
+            if ($codeblock == 0) {
+                $codeblock = 2;
+                $line = "<pre><code>\n";
+            } elsif ($codeblock == 2) {
+                $codeblock = 0;
+                $line = "</code></pre>\n";
+            }
+        } elsif ($line =~ m/^```/) {
             if ($codeblock == 0) {
                 $codeblock = 1;
                 $line = "<pre><code>\n";
 
             } elsif ($codeblock == 1) {
-                $codeblock = 0;
-                $line = "</code></pre>\n";
-            }
-        } elsif ($line =~ m/^````/) {
-            if ($codeblock == 0) {
-                $codeblock = 2;
-                $line = "<pre><code>\n";
-            } elsif ($codeblock == 2) {
                 $codeblock = 0;
                 $line = "</code></pre>\n";
             }
@@ -43,9 +43,9 @@ use warnings;
     }
 }
 
-if (@ARGV > 0) {
-    print "<html>\n<head></head>\n<body>\n";
+print "<html>\n<head></head>\n<body>\n";
 
+if (@ARGV > 0) {
     for my $filename (@ARGV) {
         open( my $fh, '<', $filename ) || die 'Can\'t open $filename: $!';
         my @lines = <$fh>;
@@ -56,6 +56,16 @@ if (@ARGV > 0) {
         }
         print "@lines";
     }
-    print "</body>\n</html>\n";
+} else {
+    my @lines;
+
+    my $i = 0;
+    while (<>) {
+        $lines[$i] = parseline($_);
+        ++$i;
+    }
+    print "@lines";
 } 
+
+print "</body>\n</html>\n";
 

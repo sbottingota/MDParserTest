@@ -10,6 +10,9 @@ or if you want to print to a file instead of to stdout:
 ```sh
 $ ./parser.pl [input md file] > [output html file]
 ```
+or like this if you want to read from stdin:
+```sh
+$ [input program] | ./parser.pl > [output html file]
 ---
 
 List of current features:  
