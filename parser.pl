@@ -6,6 +6,7 @@ use warnings;
 {
     my $codeblock = 0; # 0: out of block, 1: in block of three backticks, 2: in block of four backticks
     my $ulistdepth = 0;
+    my $olistdepth = 0;
 
     my sub balanceulist {
         my $requireddepth = $_[0];
@@ -19,6 +20,23 @@ use warnings;
         while ($requireddepth < $ulistdepth) {
             $line = "</ul>\n" . $line;
             --$ulistdepth;
+        }
+
+        return $line;
+    }
+
+    my sub balanceolist {
+        my $requireddepth = $_[0];
+
+        my $line = "";
+
+        while ($requireddepth > $olistdepth) {
+            $line = "<ol>\n" . $line;
+            ++$olistdepth;
+        }
+        while ($requireddepth < $olistdepth) {
+            $line = "</ol>\n" . $line;
+            --$olistdepth;
         }
 
         return $line;
@@ -51,12 +69,20 @@ use warnings;
             # unordered lists
             if ($line =~ s{^((?: {4})*)[-*] (.*)$}{<li>$2</li>}) {
                 my $newlistdepth = (length($1) / 4) + 1;
-
                 $line = balanceulist($newlistdepth) . $line;
 
             } else {
                 $line = balanceulist(0) . $line;
             }
+
+            # ordered lists
+            if ($line =~ s{^((?: {4})*)\d+[.)] (.*)$}{<li>$2</li>}) {
+                my $newlistdepth = (length($1) / 4) + 1;
+                $line = balanceolist($newlistdepth) . $line;
+            } else {
+                $line = balanceolist(0) . $line;
+            }
+
 
             $line =~ s{^(#{1,6}) (.*)$}{'<h' . length($1) . ">$2</h" . length($1) . '>'}e; # headers
             $line =~ s{^(\*\*\*+)|(---+)|(___+)\s*$}{<hr />\n}; # horizontal rules
@@ -72,8 +98,7 @@ use warnings;
     }
 
     sub endparse {
-        my $line = balanceulist 0;
-        return $line;
+        return balanceulist(0) . balanceolist(0);
     }
 }
 

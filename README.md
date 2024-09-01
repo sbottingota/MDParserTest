@@ -21,3 +21,4 @@ List of current features:
 - Line breaks (line with two spaces at the end)
 - Bold and italic text (using \* or \_)
 - Unordered lists (using - or \*)
+- Ordered lists (using 1)  or 1.)
