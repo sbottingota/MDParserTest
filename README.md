@@ -20,3 +20,4 @@ List of current features:
 - Horizontal rules (---|\*\*\*|\_\_\_)
 - Line breaks (line with two spaces at the end)
 - Bold and italic text (using \* or \_)
+- Unordered lists (using - or \*)
